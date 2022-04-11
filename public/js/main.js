@@ -78,7 +78,6 @@ var srProds = async (id, name) => {
    if (id != 0) {
       let res_prods = await fb.getWithOpt('products', `?orderBy="series"&equalTo=${id}`);
       let prods = await res_prods.json();
-      console.log(prods);
       $('#main-prods').html('');
 
       if (jQuery.isEmptyObject(prods)) {
@@ -107,7 +106,6 @@ var detailProd = async (id) => {
    let size = await res_size.json();
    Object.keys(prod).forEach((key) => {
       const row = prod[key];
-      console.log(series);
       $('.product').html(`
          <div class="product__photo">
             <div class="photo-container">
