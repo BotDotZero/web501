@@ -1,0 +1,121 @@
+<!-- Add Modal -->
+<div class="modal fade" id="newProdModal" tabindex="-1" aria-labelledby="newModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="newModalLabel">New Product</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <form id="newProdForm">
+               <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="newPimg" name="newProdImage" placeholder="Image" required>
+                  <label for="newPimg">Image</label>
+               </div>
+               <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="newPname" name="newProdName" placeholder="Name" required>
+                  <label for="newPname">Name</label>
+               </div>
+               <div class="form-floating mb-3">
+                  <input type="number" class="form-control" id="newPprice" name="newProdPrice" placeholder="Price"
+                     min="1" required>
+                  <label for="newPprice">Price</label>
+               </div>
+               <div class="form-floating mb-3">
+                  <input type="date" class="form-control" id="newPrelease" name="newProdRelease" placeholder="Release"
+                     required>
+                  <label for="newPrelease">Release</label>
+               </div>
+               <div class="form-floating mb-3">
+                  <select class="form-select slProdSeries" id="newPseries" name="newProdSeries" required>
+                     <!-- Load from db -->
+                  </select>
+                  <label for="newPseries">Series</label>
+               </div>
+               <div class="form-floating mb-3">
+                  <select class="form-select slProdSize" id="newPsize" name="newProdSize" required>
+                     <!-- Load from db -->
+                  </select>
+                  <label for="newPsize">Size</label>
+               </div>
+               <div class="d-flex flex-row-reverse">
+                  <button type="submit" class="btn btn-success">Add</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- Edit Modal -->
+<div class="modal fade" id="editProdModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Edit Product</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <form id="editProdForm">
+               <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="editPid" name="editProdId" placeholder="Id" readonly>
+                  <label for="editPid">ID</label>
+               </div>
+               <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="editPimg" name="editProdImage" placeholder="Image"
+                     required>
+                  <label for="editPimg">Image</label>
+               </div>
+               <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="editPname" name="editProdName" placeholder="Name"
+                     required>
+                  <label for="editPname">Name</label>
+               </div>
+               <div class="form-floating mb-3">
+                  <input type="number" class="form-control" id="editPprice" name="editProdPrice" placeholder="Price"
+                     min="1" required>
+                  <label for="editPprice">Price</label>
+               </div>
+               <div class="form-floating mb-3">
+                  <input type="date" class="form-control" id="editPrelease" name="editProdRelease" placeholder="Release"
+                     required>
+                  <label for="editPrelease">Release</label>
+               </div>
+               <div class="form-floating mb-3">
+                  <select class="form-select slProdSeries" id="editPseries" name="editProdSeries" required>
+                     <!-- Load from db -->
+                  </select>
+                  <label for="editPseries">Series</label>
+               </div>
+               <div class="form-floating mb-3">
+                  <select class="form-select slProdSize" id="editPsize" name="editProdSize" required>
+                     <!-- Load from db -->
+                  </select>
+                  <label for="editPsize">Size</label>
+               </div>
+               <div class="d-flex flex-row-reverse">
+                  <button type="submit" class="btn btn-success">Save</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+</div>
+<!-- nor -->
+<div class="container">
+   <table class="table table-striped table-dark">
+      <thead>
+         <tr>
+            <th>ID</th>
+            <th>UID</th>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Permission</th>
+            <th>Status</th>
+            <th></th>
+         </tr>
+      </thead>
+      <tbody id="tbl-users">
+
+      </tbody>
+   </table>
+</div>
