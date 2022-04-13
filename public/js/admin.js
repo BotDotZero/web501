@@ -5,13 +5,10 @@ const fb = new FireBaseService();
 var checkAdmin = async () => {
    if (document.cookie) {
       let uid = document.cookie.split("=")[1];
-      console.log(uid);
       let res_usr = await fb.getWithOpt('users', `?orderBy="uid"&equalTo="${uid}"`);
       let usr = await res_usr.json();
       Object.keys(usr).forEach((key) => {
-         if (usr[key].permission == 1) {
-            console.log('admin');
-         } else {
+         if (usr[key].permission != 1) {
             location.href = '../';
          }
       });
@@ -34,7 +31,7 @@ var adminProds = async () => {
       $('#tbl-prod').append(`
          <tr>
             <th>${row.id}</th>
-            <td><img src="../public/${row.img}" style="max-width: 200px"></td>
+            <td><img src="${row.img}" style="max-width: 200px"></td>
             <td>${row.name}</td>
             <td>${Intl.NumberFormat('vi-VN').format(row.price)}</td>
             <td>${(row.release).split('-').reverse().join('/')}</td>
@@ -77,31 +74,59 @@ var adminProds = async () => {
 
    $('#newProdForm').submit(function (e) {
       e.preventDefault();
-      let newImg = $(this).find('#newPimg').val();
-      let newName = $(this).find('#newPname').val();
-      let newPrice = $(this).find('#newPprice').val();
-      let newRelease = $(this).find('#newPrelease').val();
-      let newSeries = $(this).find('#newPseries').val();
-      let newSize = $(this).find('#newPsize').val();
-      addProd(newImg, newName, newPrice, newRelease, newSeries, newSize);
-      $("#newProdModal").modal('hide');
-      $(this).trigger('reset');
+      // let newImg = $(this).find('#newPimg').val();
+      var file = $(this).find('#newPimg').get(0).files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+         let newImg = reader.result;
+         $('#newPimgPreview').attr('src', newImg);
+         let newName = $(this).find('#newPname').val();
+         let newPrice = $(this).find('#newPprice').val();
+         let newRelease = $(this).find('#newPrelease').val();
+         let newSeries = $(this).find('#newPseries').val();
+         let newSize = $(this).find('#newPsize').val();
+         addProd(newImg, newName, newPrice, newRelease, newSeries, newSize);
+         $("#newProdModal").modal('hide');
+         $(this).trigger('reset');
+      };
+      reader.readAsDataURL(file);
+
    });   // Add product
 
    $('#editProdForm').submit(function (e) {
       e.preventDefault();
-      let editId = $(this).find('#editPid').val();
-      let editImg = $(this).find('#editPimg').val();
-      let editName = $(this).find('#editPname').val();
-      let editPrice = $(this).find('#editPprice').val();
-      let editRelease = $(this).find('#editPrelease').val();
-      let editSeries = $(this).find('#editPseries').val();
-      let editSize = $(this).find('#editPsize').val();
-      editProd(editId, editImg, editName, editPrice, editRelease, editSeries, editSize);
-      $("#editProdModal").modal('hide');
-      $(this).trigger('reset');
+
+      var file = $(this).find('#editPimg').get(0).files[0];
+      if (file) {
+         const reader = new FileReader();
+         reader.onloadend = () => {
+            let editImg = reader.result;
+            let editId = $(this).find('#editPid').val();
+            // let editImg = $(this).find('#editPimg').val();
+            let editName = $(this).find('#editPname').val();
+            let editPrice = $(this).find('#editPprice').val();
+            let editRelease = $(this).find('#editPrelease').val();
+            let editSeries = $(this).find('#editPseries').val();
+            let editSize = $(this).find('#editPsize').val();
+            editProd(editId, editImg, editName, editPrice, editRelease, editSeries, editSize);
+            $("#editProdModal").modal('hide');
+            $(this).trigger('reset');
+         };
+         reader.readAsDataURL(file);
+      } else {
+         let editId = $(this).find('#editPid').val();
+         let editImg = $('#editPimgPreview').attr('src');
+         let editName = $(this).find('#editPname').val();
+         let editPrice = $(this).find('#editPprice').val();
+         let editRelease = $(this).find('#editPrelease').val();
+         let editSeries = $(this).find('#editPseries').val();
+         let editSize = $(this).find('#editPsize').val();
+         editProd(editId, editImg, editName, editPrice, editRelease, editSeries, editSize);
+         $("#editProdModal").modal('hide');
+         $(this).trigger('reset');
+      }
    });   // Edit Product
-}  // adminProds();
+}
 
 var loadEditProd = async (id) => {
    let res_prod = await fb.getWithOpt('products', `?orderBy="id"&equalTo=${id}`);
@@ -110,7 +135,7 @@ var loadEditProd = async (id) => {
       const row = edit_prod[key];
       var editForm = document.querySelector('#editProdForm');
       editForm.editProdId.value = row.id;
-      editForm.editProdImage.value = row.img;
+      $("#editPimgPreview").attr('src', row.img);
       editForm.editProdName.value = row.name;
       editForm.editProdPrice.value = row.price;
       editForm.editProdRelease.value = row.release;
@@ -213,7 +238,7 @@ var adminSeries = async () => {
       $("#editSeriesModal").modal('hide');
       $(this).trigger('reset');
    }); // Edit Series
-}  // adminSeries();
+}
 
 var loadEditSr = async (id) => {
    let res_sr = await fb.getWithOpt('series', `?orderBy="id"&equalTo=${id}`);
@@ -296,13 +321,8 @@ var adminUsers = async () => {
          unbanUsr(id);
       });
    })
-}  // adminUsers();
-
-var getUser = async (uid) => {
-   let res_usr = await fb.getWithOpt('users', `?orderBy="id"&equalTo="${uid}"`);
-   let usr = await res_usr.json();
-   return usr;
 }
+
 var banUsr = async (id) => {
    let res1 = await fb.getWithOpt('users', `?orderBy="id"&equalTo=${id}`);
    let data = await res1.json();

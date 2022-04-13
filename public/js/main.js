@@ -9,7 +9,7 @@ const repeateProds = (prods) => {
          <div class="col mb-5">
             <div class="card h-100">
                <div class="badge bg-danger text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-               <div class="p-3"><img class="card-img-top rounded-3" src="public/${row.img}" alt="..." /></div>
+               <div class="p-3"><img class="card-img-top rounded-3" src="${row.img}" alt="..." /></div>
                <div class="card-body p-4">
                   <div class="text-center">
                      <h5 class="fw-bolder open-detail" data-id="${row.id}" role="button">${row.name}</h5>

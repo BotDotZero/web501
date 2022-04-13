@@ -110,3 +110,13 @@ h5.open-detail:hover {
 .buy--btn:active {
    transform: scale(0.97);
 }
+
+.main-sect {
+   min-height: calc(100vh - 180px);
+}
+#user_photo {
+   border-radius: 50%;
+   margin: 0px;
+   height: 30px;
+   width: 30px;
+}

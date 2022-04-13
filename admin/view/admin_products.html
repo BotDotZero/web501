@@ -8,9 +8,10 @@
          </div>
          <div class="modal-body">
             <form id="newProdForm">
-               <div class="form-floating mb-3">
-                  <input type="text" class="form-control" id="newPimg" name="newProdImage" placeholder="Image" required>
+               <div class=" mb-3">
                   <label for="newPimg">Image</label>
+                  <input type="file" class="form-control" id="newPimg" name="newProdImage" placeholder="Image" required>
+                  <img id="newPimgPreview" src="" alt="" style="max-width: 100px;">
                </div>
                <div class="form-floating mb-3">
                   <input type="text" class="form-control" id="newPname" name="newProdName" placeholder="Name" required>
@@ -60,10 +61,10 @@
                   <input type="text" class="form-control" id="editPid" name="editProdId" placeholder="Id" readonly>
                   <label for="editPid">ID</label>
                </div>
-               <div class="form-floating mb-3">
-                  <input type="text" class="form-control" id="editPimg" name="editProdImage" placeholder="Image"
-                     required>
+               <div class=" mb-3">
                   <label for="editPimg">Image</label>
+                  <input type="file" class="form-control" id="editPimg" name="editProdImage" placeholder="Image">
+                  <img id="editPimgPreview" src="" alt="" style="max-width: 100px;">
                </div>
                <div class="form-floating mb-3">
                   <input type="text" class="form-control" id="editPname" name="editProdName" placeholder="Name"
