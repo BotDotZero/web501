@@ -2,6 +2,25 @@ import { FireBaseService } from "./firebaseService.js";
 
 const fb = new FireBaseService();
 
+var checkAdmin = async () => {
+   if (document.cookie) {
+      let uid = document.cookie.split("=")[1];
+      console.log(uid);
+      let res_usr = await fb.getWithOpt('users', `?orderBy="uid"&equalTo="${uid}"`);
+      let usr = await res_usr.json();
+      Object.keys(usr).forEach((key) => {
+         if (usr[key].permission == 1) {
+            console.log('admin');
+         } else {
+            location.href = '../';
+         }
+      });
+   } else {
+      location.href = '../';
+   }
+};
+checkAdmin();
+
 var adminProds = async () => {
    let res_prods = await fb.getAll('products');
    let prods = await res_prods.json();
@@ -279,7 +298,11 @@ var adminUsers = async () => {
    })
 }  // adminUsers();
 
-
+var getUser = async (uid) => {
+   let res_usr = await fb.getWithOpt('users', `?orderBy="id"&equalTo="${uid}"`);
+   let usr = await res_usr.json();
+   return usr;
+}
 var banUsr = async (id) => {
    let res1 = await fb.getWithOpt('users', `?orderBy="id"&equalTo=${id}`);
    let data = await res1.json();

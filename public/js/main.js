@@ -21,7 +21,7 @@ const repeateProds = (prods) => {
                         <div class="bi-star-fill"></div>
                      </div>
                      <span class="text-muted text-decoration-line-through">${(Math.round(row.price * (Math.random() + 1))).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
-                     ${(row.price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                     <span class="fw-bold"> ${(row.price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
                   </div>
                </div>
                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
@@ -51,7 +51,6 @@ var mainProds = async () => {
    $('#prods-dropdown .dropdown-item' || '.detail-prod-series').click(function () {
       let id = $(this).data('id');
       let name = $(this).html();
-      $('.main-sect').attr('id', `${(name).toLowerCase().replace(/ /g, "-")}`)
       srProds(id, name);
    })
    $('.open-detail').click(function () {
@@ -65,6 +64,9 @@ var allProds = async () => {
    let res_prods = await fb.getAll('products');
    let prods = await res_prods.json();
    $('#main-prods').html(repeateProds(prods));
+   $('#main-noti').html(`
+         <h2 class="text-center mb-5">All Products</h2>
+      `);
    $('.open-detail').click(function () {
       let id = $(this).data('id');
       detailProd(id);
@@ -75,6 +77,7 @@ $('#main-all-prods').click(() => {
    location.hash = '#main-sect';
 })
 var srProds = async (id, name) => {
+   $('header').hide();
    if (id != 0) {
       let res_prods = await fb.getWithOpt('products', `?orderBy="series"&equalTo=${id}`);
       let prods = await res_prods.json();
