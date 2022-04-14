@@ -11,7 +11,7 @@ export class BaseAPI {
          headers: {
             'Content-Type': 'application/json',
          },
-         body: dataPost,
+         body: JSON.stringify(dataPost),
       })
    }
    _edit = (endPoint, id, dataPut) => {
@@ -20,7 +20,7 @@ export class BaseAPI {
          headers: {
             'Content-Type': 'application/json',
          },
-         body: dataPut,
+         body: JSON.stringify(dataPut),
       })
    }
    _del = (endPoint, id) => {

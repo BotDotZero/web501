@@ -25,7 +25,7 @@ const repeateProds = (prods) => {
                   </div>
                </div>
                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                  <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Add to cart</a></div>
+                  <div class="text-center"><button class="btn btn-outline-dark mt-auto add-to-cart" data-id="${row.id}">Add to cart</button></div>
                </div>
             </div>
          </div>
@@ -57,6 +57,14 @@ var mainProds = async () => {
       let id = $(this).data('id');
       detailProd(id);
    })
+   $('.add-to-cart').click(function () {
+      if (!document.cookie.split('=')[1]) {
+         alert('Please login to add to cart');
+      } else {
+         let id = $(this).data('id');
+         addToCart(document.cookie.split('=')[1], id);
+      }
+   })
 }
 mainProds();
 
@@ -70,6 +78,14 @@ var allProds = async () => {
    $('.open-detail').click(function () {
       let id = $(this).data('id');
       detailProd(id);
+   })
+   $('.add-to-cart').click(function () {
+      if (!document.cookie.split('=')[1]) {
+         alert('Please login to add to cart');
+      } else {
+         let id = $(this).data('id');
+         addToCart(document.cookie.split('=')[1], id);
+      }
    })
 }
 $('#main-all-prods').click(() => {
@@ -112,7 +128,7 @@ var detailProd = async (id) => {
       $('.product').html(`
          <div class="product__photo">
             <div class="photo-container">
-               <img src="public/${row.img}" alt="${row.name}" />
+               <img src="${row.img}" alt="${row.name}" />
             </div>
          </div>
          <div class="product__info">
@@ -172,3 +188,34 @@ $('#search-prod').submit(async (e) => {
       $('#main-prods').html(repeateProds(result));
    }
 })
+var addToCart = async (uid, id) => {
+   let res_cart = await fb.getWithOpt('carts', `?orderBy="uid"&equalTo="${uid}"`);
+   let cart = await res_cart.json();
+   let obj_id = Object.keys(cart)[0];
+   console.log(uid, obj_id);
+
+   if (!jQuery.isEmptyObject(cart)) {
+      Object.keys(cart).forEach((key) => {
+         const row = cart[key];
+         let prods = row.products;
+         console.log(prods);
+         if (prods.length == 0) {
+            prods.push({ "id": id, "quantity": 1 });
+         } else {
+            let check = false;
+            prods.forEach((prod) => {
+               if (prod.id == id) {
+                  check = true;
+                  prod.quantity++;
+               }
+            })
+            if (!check) {
+               prods.push({ "id": id, "quantity": 1 });
+            }
+         }
+         fb.edit('carts', obj_id, { "products": prods, "uid": uid });
+      })
+   } else {
+      fb.add('carts', { "uid": uid, "products": [{ "id": id, "quantity": 1 }] });
+   }
+}

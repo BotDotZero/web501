@@ -149,7 +149,7 @@ var addProd = async (i, n, p, r, sr, sz) => {
    let res1 = await fb.getWithOpt('products', `?orderBy="id"&limitToLast=1`);
    let data = await res1.json();
    let last_id = data[Object.keys(data)[0]].id;
-   let dataPost = JSON.stringify({
+   let dataPost = {
       id: parseInt(last_id) + 1,
       img: i,
       name: n,
@@ -157,7 +157,7 @@ var addProd = async (i, n, p, r, sr, sz) => {
       release: r,
       series: parseInt(sr),
       size: parseInt(sz)
-   })
+   }
    let res = await fb.add('products', dataPost)
       .then(res => {
          $('.sidebar__item[data-page="3"]').click();
@@ -168,7 +168,7 @@ var editProd = async (id, i, n, p, r, sr, sz) => {
    let res1 = await fb.getWithOpt('products', `?orderBy="id"&equalTo=${id}`);
    let data = await res1.json();
    let obj_id = Object.keys(data)[0];
-   let dataPost = JSON.stringify({
+   let dataPost = {
       id: parseInt(id),
       img: i,
       name: n,
@@ -176,7 +176,7 @@ var editProd = async (id, i, n, p, r, sr, sz) => {
       release: r,
       series: parseInt(sr),
       size: parseInt(sz)
-   })
+   }
    let res = await fb.edit('products', obj_id, dataPost)
       .then(res => {
          $('.sidebar__item[data-page="3"]').click();
@@ -256,10 +256,10 @@ var addSr = async (n) => {
    let res1 = await fb.getWithOpt('series', `?orderBy="id"&limitToLast=1`);
    let data = await res1.json();
    let last_id = data[Object.keys(data)[0]].id;
-   let dataPost = JSON.stringify({
+   let dataPost = {
       id: parseInt(last_id) + 1,
       name: n
-   })
+   }
    let res = await fb.add('series', dataPost)
       .then(res => {
          $('.sidebar__item[data-page="1"]').click();
@@ -270,10 +270,10 @@ var editSr = async (id, n) => {
    let res1 = await fb.getWithOpt('series', `?orderBy="id"&equalTo=${id}`);
    let data = await res1.json();
    let obj_id = Object.keys(data)[0];
-   let dataPost = JSON.stringify({
+   let dataPost = {
       id: parseInt(id),
       name: n
-   })
+   }
    let res = await fb.edit('series', obj_id, dataPost)
       .then(res => {
          $('.sidebar__item[data-page="1"]').click();
@@ -330,14 +330,14 @@ var banUsr = async (id) => {
    let dataPost = '';
    Object.keys(data).forEach((key) => {
       const row = data[key];
-      dataPost = JSON.stringify({
+      dataPost ={
          id: parseInt(id),
          uid: row.uid,
          email: row.email,
          name: row.name,
          permission: row.permission,
          status: 0
-      })
+      }
    })
    let res = await fb.edit('users', obj_id, dataPost)
       .then(res => {
@@ -352,14 +352,14 @@ var unbanUsr = async (id) => {
    let dataPost = '';
    Object.keys(data).forEach((key) => {
       const row = data[key];
-      dataPost = JSON.stringify({
+      dataPost = {
          id: parseInt(id),
          uid: row.uid,
          email: row.email,
          name: row.name,
          permission: row.permission,
          status: 1
-      })
+      }
    })
    let res = await fb.edit('users', obj_id, dataPost)
       .then(res => {

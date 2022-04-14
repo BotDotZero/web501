@@ -70,7 +70,6 @@ $('#login').click(() => {
             document.cookie = `uid=${user.uid}; path=/`;
             // Check if user exists
             checkUser(user);
-            location.reload();
          }).catch((error) => {
             // Handle Errors here.
             const errorCode = error.code;
@@ -102,7 +101,7 @@ var checkUser = async (user) => {
    let usr = await res_usr.json();
    if (jQuery.isEmptyObject(usr)) {
       console.log('Create new user');
-      let usr_data = JSON.stringify({
+      let usr_data = {
          id: parseInt(last_id) + 1,
          uid: user.uid,
          name: user.displayName,
@@ -110,9 +109,10 @@ var checkUser = async (user) => {
          photo: user.photoURL,
          permission: 0,
          status: 1
-      });
+      };
       await fb.add('users', usr_data);
    } else {
       console.log('User already exists');
    }
+   location.reload();
 }
