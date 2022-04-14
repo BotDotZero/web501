@@ -14,11 +14,11 @@ const repeateProds = (prods) => {
                   <div class="text-center">
                      <h5 class="fw-bolder open-detail" data-id="${row.id}" role="button">${row.name}</h5>
                      <div class="d-flex justify-content-center small text-warning mb-2">
-                        <div class="bi-star-fill"></div>
-                        <div class="bi-star-fill"></div>
-                        <div class="bi-star-fill"></div>
-                        <div class="bi-star-fill"></div>
-                        <div class="bi-star-fill"></div>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
                      </div>
                      <span class="text-muted text-decoration-line-through">${(Math.round(row.price * (Math.random() + 1))).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
                      <span class="fw-bold"> ${(row.price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
@@ -114,6 +114,14 @@ var srProds = async (id, name) => {
       let id = $(this).data('id');
       detailProd(id);
    })
+   $('.add-to-cart').click(function () {
+      if (!document.cookie.split('=')[1]) {
+         alert('Please login to add to cart');
+      } else {
+         let id = $(this).data('id');
+         addToCart(document.cookie.split('=')[1], id);
+      }
+   })
 }
 
 var detailProd = async (id) => {
@@ -142,7 +150,7 @@ var detailProd = async (id) => {
                <h4>Series: <span role="button" data-id="${row.series}" class="text-info detail-prod-series">${getDetail(series, row.series)}</span></h4>
                <h4>Size: <span class="text-info">${getDetail(size, row.size)}</span></h4>
             </div>
-            <button class="buy--btn">ADD TO CART</button>
+            <button class="buy--btn add-to-cart" data-id="${row.id}">ADD TO CART</button>
          </div>
       `)
    })
@@ -152,6 +160,18 @@ var detailProd = async (id) => {
       let name = $(this).html();
       srProds(id, name);
       $('#detailProdModal').modal('hide');
+   })
+   $('.open-detail').click(function () {
+      let id = $(this).data('id');
+      detailProd(id);
+   })
+   $('.add-to-cart').click(function () {
+      if (!document.cookie.split('=')[1]) {
+         alert('Please login to add to cart');
+      } else {
+         let id = $(this).data('id');
+         addToCart(document.cookie.split('=')[1], id);
+      }
    })
 }
 var getDetail = (arr, id) => {
@@ -163,6 +183,12 @@ var getDetail = (arr, id) => {
       }
    })
    return out;
+}
+var getOneOfProd = async (id) => {
+   let res_prod = await fb.getWithOpt('products', `?orderBy="id"&equalTo=${id}`);
+   let prod = await res_prod.json();
+
+   return prod;
 }
 $('#search-prod').submit(async (e) => {
    e.preventDefault();
@@ -192,13 +218,12 @@ var addToCart = async (uid, id) => {
    let res_cart = await fb.getWithOpt('carts', `?orderBy="uid"&equalTo="${uid}"`);
    let cart = await res_cart.json();
    let obj_id = Object.keys(cart)[0];
-   console.log(uid, obj_id);
 
    if (!jQuery.isEmptyObject(cart)) {
       Object.keys(cart).forEach((key) => {
          const row = cart[key];
          let prods = row.products;
-         console.log(prods);
+
          if (prods.length == 0) {
             prods.push({ "id": id, "quantity": 1 });
          } else {
@@ -218,4 +243,93 @@ var addToCart = async (uid, id) => {
    } else {
       fb.add('carts', { "uid": uid, "products": [{ "id": id, "quantity": 1 }] });
    }
+   alert('Add to cart success');
 }
+$('#cart-shortcut').click(async () => {
+   location.hash = '#cart';
+   $('header').hide();
+   $('.main-sect').load('public/pages/cart.html');
+
+   let res_prods = await fb.getAll('products');
+   let list_prods = await res_prods.json();
+   let res_cart = await fb.getWithOpt('carts', `?orderBy="uid"&equalTo="${document.cookie.split('=')[1]}"`);
+   let cart_data = await res_cart.json();
+   Object.keys(cart_data).forEach((key) => {
+      const row = cart_data[key];
+      let prods = row.products;
+      let total = 0;
+      let total_quantity = 0;
+      $('#cart-table-body').html('');
+      prods.forEach((prod) => {
+         Object.keys(list_prods).forEach((key) => {
+            const row = list_prods[key];
+            if (row.id == prod.id) {
+               total += row.price * prod.quantity;
+               total_quantity += prod.quantity;
+               $('#cart-table-body').append(`
+                  <tr>
+                     <td>
+                        <div class="cart-img">
+                           <img style="max-width: 200px; border-radius: 10px" src="${row.img}" />
+                        </div>
+                     </td>
+                     <td>
+                        <div class="cart-name">
+                           <p>${row.name}</p>
+                        </div>
+                     </td>
+                     <td>
+                        <div class="cart-price">
+                           <span class="price__value">${(row.price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
+                        </div>
+                     </td>
+                     <td>
+                        <div class="cart-quantity">
+                           <span class="quantity__value">${prod.quantity}</span>
+                        </div>
+                     </td>
+                     <td>
+                        <div class="cart-total">
+                           <span class="total__value">${(row.price*prod.quantity).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
+                        </div>
+                     </td>
+                     <td>
+                        <div class="cart-remove">
+                           <button class="btn btn-danger" data-id="${prod.id}">Remove</button>
+                        </div>
+                     </td>
+                  </tr>
+               `)
+            }
+         })
+      })
+      $('#cart-table-body').append(`
+         <tr>
+            <th colspan="3" class="text-center">Total</th>
+            <th>${total_quantity}</th>
+            <th>${total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</th>
+            <th></th>
+         </tr>
+      `)
+      $('.cart-remove button').click(async (e) => {
+         let id = e.target.dataset.id;
+         let res_cart = await fb.getWithOpt('carts', `?orderBy="uid"&equalTo="${document.cookie.split('=')[1]}"`);
+         let cart_data = await res_cart.json();
+         let obj_id = Object.keys(cart_data)[0];
+         let prods = cart_data[obj_id].products;
+         let new_prods = [];
+         prods.forEach((prod) => {
+            if (prod.id != id) {
+               new_prods.push(prod);
+            }
+         })
+         if(new_prods.length == 0){
+            fb.delete('carts', obj_id);
+         }else{
+            fb.edit('carts', obj_id, { "products": new_prods, "uid": document.cookie.split('=')[1] });
+         }
+         $(e.target).parent().parent().parent().remove();
+         alert('Remove success');
+      })
+   })
+})

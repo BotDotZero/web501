@@ -29,11 +29,26 @@ const provider = new GoogleAuthProvider();
 const curUser = async (uid) => {
    let res_usr = await fb.getWithOpt('users', `?orderBy="uid"&equalTo="${uid}"`);
    let usr = await res_usr.json();
+   let res_cart = await fb.getWithOpt('carts', `?orderBy="uid"&equalTo="${uid}"`);
+   let cart = await res_cart.json();
+   let number_prods = 0;
+   if(!jQuery.isEmptyObject(cart)){
+      Object.keys(cart).forEach(key => {
+         let cart_data = cart[key];
+         number_prods = (cart_data.products).length
+      });
+   } else {
+      number_prods = 0;
+   }
    Object.keys(usr).forEach(function (key) {
       let usr_data = usr[key];
       if (usr_data.status == 1) {
          $('#user_photo').attr('src', usr_data.photo);
          $('#loggedIn').attr('title', usr_data.name);
+         $('#cart-shortcut').html(`<a class="dropdown-item" role="button">Cart(${number_prods})</a>`)
+         if(usr_data.permission == 1){
+            $('#loggedIn').find('ul').prepend(`<li><a class="dropdown-item" href="admin">Admin</a></li>`);
+         }
       } else {
          signOut(auth).then(() => {
             // Sign-out successful.
@@ -55,7 +70,7 @@ if (document.cookie) {
 } else {
    $('#loggedIn').hide();
    $('#notLoggedIn').show();
-   console.log('Not logged in');
+   // console.log('Not logged in');
 }
 $('#login').click(() => {
    if (!auth.currentUser) { // If user is not logged in
@@ -100,7 +115,7 @@ var checkUser = async (user) => {
    let res_usr = await fb.getWithOpt('users', `?orderBy="uid"&equalTo="${user.uid}"`);
    let usr = await res_usr.json();
    if (jQuery.isEmptyObject(usr)) {
-      console.log('Create new user');
+      // console.log('Create new user');
       let usr_data = {
          id: parseInt(last_id) + 1,
          uid: user.uid,
@@ -112,7 +127,7 @@ var checkUser = async (user) => {
       };
       await fb.add('users', usr_data);
    } else {
-      console.log('User already exists');
+      // console.log('User already exists');
    }
    location.reload();
 }
