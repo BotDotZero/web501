@@ -329,6 +329,7 @@ $('#cart-shortcut').click(async () => {
             fb.edit('carts', obj_id, { "products": new_prods, "uid": document.cookie.split('=')[1] });
          }
          $(e.target).parent().parent().parent().remove();
+         $('#cart-shortcut').click();
          alert('Remove success');
       })
    })
