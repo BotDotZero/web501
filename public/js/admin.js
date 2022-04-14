@@ -44,8 +44,6 @@ var adminProds = async () => {
          </tr>
       `)
    })
-   // `<button onclick="loadEditProd(${row.id})" class="btn btn-sm btn-outline-warning">Edit</button> |
-   // <button onclick="if(confirm('Xoá thật không?')) delProd(${row.id})" class="btn btn-sm btn-outline-danger">Del</button>`
    $('.slProdSeries').html('');
    Object.keys(srs).forEach((key) => {
       const row = srs[key];

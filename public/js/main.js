@@ -1,6 +1,7 @@
 import { FireBaseService } from "./firebaseService.js";
 
 const fb = new FireBaseService();
+
 const repeateProds = (prods) => {
    let out = '';
    Object.keys(prods).forEach((key) => {
@@ -183,12 +184,6 @@ var getDetail = (arr, id) => {
       }
    })
    return out;
-}
-var getOneOfProd = async (id) => {
-   let res_prod = await fb.getWithOpt('products', `?orderBy="id"&equalTo=${id}`);
-   let prod = await res_prod.json();
-
-   return prod;
 }
 $('#search-prod').submit(async (e) => {
    e.preventDefault();
