@@ -157,6 +157,7 @@ var detailProd = async (id) => {
    })
    $('#detailProdModal').modal('show');
    $('.detail-prod-series').click(function () {
+      location.hash = `#${$(this).html().toLowerCase().replace(/ /g, "-")}`;
       let id = $(this).data('id');
       let name = $(this).html();
       srProds(id, name);
